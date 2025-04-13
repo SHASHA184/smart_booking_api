@@ -1,0 +1,133 @@
+{
+    "users": [
+        {
+            "first_name": "Alice",
+            "last_name": "Smith",
+            "email": "alice@example.com",
+            "password": "password",
+            "role": "USER"
+        },
+        {
+            "first_name": "Charlie",
+            "last_name": "Davis",
+            "email": "charlie@example.com",
+            "password": "password",
+            "role": "USER"
+        },
+        {
+            "first_name": "Bob",
+            "last_name": "Brown",
+            "email": "bob@example.com",
+            "password": "password",
+            "role": "OWNER"
+        },
+        {
+            "first_name": "Diana",
+            "last_name": "Evans",
+            "email": "diana@example.com",
+            "password": "password",
+            "role": "USER"
+        },
+        {
+            "first_name": "Eve",
+            "last_name": "Johnson",
+            "email": "eve@example.com",
+            "password": "password",
+            "role": "OWNER"
+        },
+        {
+            "first_name": "Frank",
+            "last_name": "Miller",
+            "email": "frank@example.com",
+            "password": "password",
+            "role": "USER"
+        },
+        {
+            "first_name": "Oleksandr",
+            "last_name": "Shelekhan",
+            "email": "oleksandr.shelekhan@nure.ua",
+            "password": "password",
+            "role": "OWNER"
+        }
+    ],
+    "properties": [
+        {
+            "owner_id": 4,
+            "name": "Beautiful Apartment",
+            "description": "This is a beautiful apartment",
+            "rooms": 2,
+            "price": 50.0,
+            "location": "New York"
+        },
+        {
+            "owner_id": 6,
+            "name": "Cozy Cottage",
+            "description": "A cozy cottage in the countryside",
+            "rooms": 3,
+            "price": 75.0,
+            "location": "California"
+        },
+        {
+            "owner_id": 8,
+            "name": "Modern Loft",
+            "description": "A modern loft in the city center",
+            "rooms": 1,
+            "price": 100.0,
+            "location": "San Francisco"
+        },
+        {
+            "owner_id": 4,
+            "name": "Luxury Villa",
+            "description": "A luxury villa with a private pool",
+            "rooms": 5,
+            "price": 200.0,
+            "location": "Miami"
+        },
+        {
+            "owner_id": 8,
+            "name": "Seaside Villa",
+            "description": "A beautiful villa by the sea",
+            "rooms": 4,
+            "price": 150.0,
+            "location": "Hawaii"
+        },
+        {
+            "owner_id": 8,
+            "name": "Mountain Cabin",
+            "description": "A cozy cabin in the mountains",
+            "rooms": 3,
+            "price": 120.0,
+            "location": "Colorado"
+        }
+    ],
+    "bookings": [
+        {
+            "property_id": 3,
+            "user_id": 2,
+            "start_date": "2024-12-21",
+            "end_date": "2024-12-25",
+            "status": "CANCELLED"
+        },
+        {
+            "property_id": 6,
+            "user_id": 2,
+            "start_date": "2025-02-01",
+            "end_date": "2025-02-05",
+            "status": "CONFIRMED"
+        },
+        {
+            "property_id": 6,
+            "user_id": 3,
+            "start_date": "2025-02-10",
+            "end_date": "2025-02-15",
+            "status": "PENDING"
+        }
+    ],
+    "payments": [
+        {
+            "booking_id": 3,
+            "amount": 375.0,
+            "status": "SUCCESS"
+        }
+    ]
+}
