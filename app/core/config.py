@@ -51,6 +51,8 @@ class Settings(BaseSettings):
     IOTHUB_HOST: str
     REGISTRY_SHARED_ACCESS_KEY_NAME: str
     REGISTRY_SHARED_ACCESS_KEY: str
+    
+    REACT_APP_API_URL: str
 
 
 settings = Settings()

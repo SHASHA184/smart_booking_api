@@ -19,10 +19,10 @@ celery_app.conf.update(
 )
 
 
-# Add periodic task schedule
-celery_app.conf.beat_schedule = {
-    "check-temperature-every-3-minutes": {
-        "task": "check_temperature_task",
-        "schedule": crontab(minute="*/1"),  # Run every 3 minutes
-    },
-}
+# # Add periodic task schedule
+# celery_app.conf.beat_schedule = {
+#     "check-temperature-every-3-minutes": {
+#         "task": "check_temperature_task",
+#         "schedule": crontab(minute="*/1"),  # Run every 3 minutes
+#     },
+# }
