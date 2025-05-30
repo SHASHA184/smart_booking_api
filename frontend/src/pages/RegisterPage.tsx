@@ -22,7 +22,6 @@ const RegisterPage: React.FC = () => {
     password: '',
     first_name: '',
     last_name: '',
-    phone_number: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -89,15 +88,6 @@ const RegisterPage: React.FC = () => {
             fullWidth
             margin="normal"
             value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <TextField
-            label="Phone Number"
-            name="phone_number"
-            fullWidth
-            margin="normal"
-            value={formData.phone_number}
             onChange={handleChange}
             required
           />

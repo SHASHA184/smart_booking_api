@@ -33,6 +33,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Verify token is still valid by fetching current user
           const currentUser = await userApi.getCurrentUser();
           setUser(currentUser);
+          localStorage.setItem('user', JSON.stringify(currentUser));
         } catch (error) {
           // Token is invalid, clear storage
           localStorage.removeItem('access_token');
@@ -85,6 +86,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null);
   };
 
+  const updateUser = (updatedUser: User): void => {
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+  };
+
   const value: AuthContextType = {
     user,
     login,
@@ -92,6 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     isLoading,
     isAuthenticated,
+    updateUser,
   };
 
   return (

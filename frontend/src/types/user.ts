@@ -8,7 +8,6 @@ export enum Role {
     first_name: string;
     last_name: string;
     email: string;
-    phone_number: string;
     role?: Role;
   }
   
@@ -20,7 +19,6 @@ export enum Role {
     first_name?: string;
     last_name?: string;
     email?: string;
-    phone_number?: string;
     role?: Role;
     password?: string;
   }
@@ -54,4 +52,5 @@ export enum Role {
     register: (userData: UserCreate) => Promise<void>;
     isLoading: boolean;
     isAuthenticated: boolean;
+    updateUser: (user: User) => void;
   }

@@ -13,6 +13,7 @@ router = APIRouter(
     tags=["users"],
 )
 
+
 @router.get("/{user_id}/activity_report", response_model=str)
 async def get_user_activity_report(
     user_id: int,
@@ -24,20 +25,20 @@ async def get_user_activity_report(
     user = await user_crud.get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     # Generate the report
     report_path = await generate_user_activity_report(db, user)
-    
+
     # Send the report to the admin's email
     admin_email = current_user.email
     subject = f"User Activity Report for {user.first_name} {user.last_name}"
     body = f"Please find attached the activity report for user {user.first_name} {user.last_name}."
     send_email_task.delay(admin_email, subject, body, report_path)
-    
+
     return "Report has been sent to your email."
 
 
-@router.get("/me", response_model=UserBase)
+@router.get("/me", response_model=User)
 async def read_current_user(current_user: User = Depends(check_not_blocked)):
     """Retrieve the current authenticated user."""
     return current_user

@@ -18,7 +18,7 @@ import { UserUpdate } from '../types/user';
 import { userApi } from '../api/userApi';
 
 const ProfilePage: React.FC = () => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -26,16 +26,15 @@ const ProfilePage: React.FC = () => {
     first_name: '',
     last_name: '',
     email: '',
-    phone_number: '',
   });
 
   useEffect(() => {
     if (user) {
+      console.log('Current user:', user);
       setFormData({
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
-        phone_number: user.phone_number,
       });
     }
   }, [user]);
@@ -53,13 +52,28 @@ const ProfilePage: React.FC = () => {
     setError('');
     setSuccess('');
 
+    console.log('Submitting with user:', user);
+
+    if (!user) {
+      setError('Please log in to update your profile');
+      return;
+    }
+
+    if (!user.id) {
+      setError('Invalid user data. Please try logging out and back in.');
+      return;
+    }
+
     try {
-      if (!user) return;
-      await userApi.updateUser(user.id, formData);
+      console.log('Updating user with ID:', user.id);
+      const updatedUser = await userApi.updateUser(user.id, formData);
+      console.log('Update response:', updatedUser);
       setSuccess('Profile updated successfully');
       setIsEditing(false);
+      updateUser(updatedUser);
     } catch (err: any) {
-      setError(err.message || 'Failed to update profile');
+      console.error('Update error:', err);
+      setError(err.response?.data?.detail || err.message || 'Failed to update profile');
     }
   };
 
@@ -69,7 +83,6 @@ const ProfilePage: React.FC = () => {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
-        phone_number: user.phone_number,
       });
     }
     setIsEditing(false);
@@ -162,17 +175,6 @@ const ProfilePage: React.FC = () => {
                 name="email"
                 type="email"
                 value={formData.email}
-                onChange={handleChange}
-                disabled={!isEditing}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone_number"
-                value={formData.phone_number}
                 onChange={handleChange}
                 disabled={!isEditing}
               />
