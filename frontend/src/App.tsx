@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import BookingsPage from './pages/BookingsPage';
 
 const theme = createTheme({
   palette: {
@@ -36,6 +37,7 @@ function App() {
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="bookings" element={<BookingsPage />} />
               {/* Add more routes as needed */}
             </Route>
           </Routes>

@@ -27,6 +27,7 @@ class Booking(BookingBase):
     id: int
     created_at: datetime
     user_id: int
+    property: Property
 
     class Config:
         orm_mode = True
