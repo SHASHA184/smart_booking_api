@@ -4,6 +4,7 @@ from pydantic.networks import EmailStr
 from app.enums.booking_status import BookingStatus
 from datetime import datetime, date
 from app.schemas.property import Property
+from app.schemas.payment import Payment
 
 
 class BookingBase(BaseModel):
@@ -28,6 +29,8 @@ class Booking(BookingBase):
     created_at: datetime
     user_id: int
     property: Property
+    booking_price: float
+    payment: Optional[Payment] = None
 
     class Config:
         orm_mode = True

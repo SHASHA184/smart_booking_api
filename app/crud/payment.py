@@ -5,6 +5,7 @@ from app.schemas.user import User
 from sqlalchemy import select, delete
 from fastapi import HTTPException
 from app.crud.booking import get_booking
+from app.models.booking import Booking
 
 
 async def create_payment(db: AsyncSession, payment_data: PaymentCreate, user: User):
@@ -20,13 +21,11 @@ async def create_payment(db: AsyncSession, payment_data: PaymentCreate, user: Us
             status_code=403,
             detail="You are not allowed to create a payment for this booking.",
         )
-    
-    property = booking.property
 
-    if payment_data.amount > property.price:
+    if payment_data.amount > booking.booking_price:
         raise HTTPException(
             status_code=400,
-            detail="Payment amount must be less than or equal to the total amount.",
+            detail="Payment amount must be less than or equal to the booking price.",
         )
 
     new_payment = Payment(**payment_data.model_dump())
@@ -86,3 +85,10 @@ async def delete_payment(db: AsyncSession, payment_id: int, user: User):
     await db.commit()
 
     return payment
+
+
+async def get_user_payments(db: AsyncSession, user: User):
+    """Get all payments for the current user."""
+    query = select(Payment).join(Booking).where(Booking.user_id == user.id)
+    result = await db.execute(query)
+    return result.scalars().all()

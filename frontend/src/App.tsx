@@ -10,6 +10,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import BookingsPage from './pages/BookingsPage';
 import MyPropertiesPage from './pages/MyPropertiesPage';
+import PaymentsPage from './pages/PaymentsPage';
 
 const theme = createTheme({
   palette: {
@@ -40,6 +41,7 @@ function App() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="bookings" element={<BookingsPage />} />
               <Route path="my-properties" element={<MyPropertiesPage />} />
+              <Route path="payments" element={<PaymentsPage />} />
               {/* Add more routes as needed */}
             </Route>
           </Routes>

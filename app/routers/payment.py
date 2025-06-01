@@ -4,6 +4,11 @@ from app.crud import payment as payment_crud
 from app.core.database import get_db
 from app.dependencies import get_current_user, role_required
 from app.enums.user_role import Role
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from typing import List
+from app.schemas.booking import Booking
+from app.schemas.user import User
 
 router = APIRouter(
     prefix="/payments",
@@ -34,3 +39,11 @@ async def delete_payment(
     current_user=Depends(get_current_user),
 ):
     return await payment_crud.delete_payment(db, payment_id, current_user)
+
+
+@router.get("/", response_model=List[Payment])
+async def get_user_payments(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await payment_crud.get_user_payments(db, current_user)

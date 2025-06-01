@@ -53,11 +53,16 @@ async def create_booking(db: AsyncSession, booking: BookingCreate, user: User):
 
     new_booking = Booking(**booking.model_dump(), user_id=user.id)
     # get the property with the owner
-    query = select(Property).where(Property.id == booking.property_id).options(
-        selectinload(Property.owner)
+    query = (
+        select(Property)
+        .where(Property.id == booking.property_id)
+        .options(selectinload(Property.owner))
     )
     result = await db.execute(query)
     property = result.scalar_one()
+    nights = (booking.end_date - booking.start_date).days
+    total_price = property.price * nights
+    new_booking.booking_price = total_price
     new_booking.property = property
     db.add(new_booking)
     await db.commit()
@@ -66,9 +71,9 @@ async def create_booking(db: AsyncSession, booking: BookingCreate, user: User):
     # Generate access codes for the booking
     access_code = AccessCode(
         booking_id=new_booking.id,
-        code=''.join(random.choices(string.ascii_uppercase + string.digits, k=8)),
+        code="".join(random.choices(string.ascii_uppercase + string.digits, k=8)),
         valid_from=datetime.utcnow(),
-        valid_until=datetime.utcnow() + timedelta(days=1)
+        valid_until=datetime.utcnow() + timedelta(days=1),
     )
     db.add(access_code)
     await db.commit()
@@ -156,7 +161,7 @@ async def get_bookings(db: AsyncSession, user: User):
     query = (
         select(Booking)
         .where(Booking.user_id == user.id)
-        .options(selectinload(Booking.property))
+        .options(selectinload(Booking.property), selectinload(Booking.payment))
     )
     result = await db.execute(query)
     bookings = result.scalars().all()
@@ -207,7 +212,7 @@ async def get_personalized_offers(db: AsyncSession, user: User):
     for cluster in set(clusters):
         cluster_indices = np.where(clusters == cluster)[0]
         cluster_bookings = [bookings[i] for i in cluster_indices]
-        
+
         # Вибрати нову властивість для пропозиції
         if new_properties:
             property = new_properties.pop(0)
@@ -216,7 +221,7 @@ async def get_personalized_offers(db: AsyncSession, user: User):
 
         # Розрахувати знижку на основі кількості бронювань у кластері
         total_days = sum((b.end_date - b.start_date).days for b in cluster_bookings)
-        discount = min(20.0, 5.0 + 0.1 * total_days) 
+        discount = min(20.0, 5.0 + 0.1 * total_days)
 
         message = "Спеціальна пропозиція саме для вас!"
         offers.append(

@@ -1,4 +1,5 @@
 import { Property } from './api';
+import { Payment } from './payment';
 
 export enum BookingStatus {
   PENDING = 'pending',
@@ -35,6 +36,8 @@ export interface Booking extends BookingBase {
   created_at: string;
   property: Property;
   access_code?: AccessCode;
+  booking_price: number;
+  payment?: Payment;
 }
 
 export interface PersonalizedOffer {

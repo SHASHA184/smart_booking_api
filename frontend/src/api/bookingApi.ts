@@ -31,4 +31,7 @@ export const bookingApi = {
     const { data } = await apiClient.get<PersonalizedOffer[]>('/bookings/personalized-offers');
     return data;
   },
+
+  postPayment: (booking_id: number, data: { amount: number; status: string }) =>
+    apiClient.post('/payments', { booking_id, ...data }),
 }; 
