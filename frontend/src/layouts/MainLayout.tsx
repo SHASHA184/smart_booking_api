@@ -85,6 +85,15 @@ const MainLayout: React.FC = () => {
                 >
                   Payments
                 </Button>
+                {isAuthenticated && user?.role?.toLowerCase() === 'owner' && (
+                  <Button 
+                    color="inherit" 
+                    startIcon={<Book />} 
+                    onClick={() => navigate('/owner-bookings')}
+                  >
+                    Owner Bookings
+                  </Button>
+                )}
               </>
             )}
             

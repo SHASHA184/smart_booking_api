@@ -38,7 +38,9 @@ async def create_new_booking(
     owner = new_booking.property.owner
     property = new_booking.property
     message = f"Your property {property.name} has been booked."
-    report_path = await generate_booking_report(db, message=message, booking=new_booking)
+    report_path = await generate_booking_report(
+        db, message=message, booking=new_booking
+    )
     send_email_task.delay(
         email_to=owner.email,
         subject="New Booking",
@@ -55,6 +57,12 @@ async def read_bookings(
     # Fetch all bookings for the current user
     return await booking_crud.get_bookings(db, current_user)
 
+@router.get("/owner", response_model=List[Booking])
+async def get_bookings_for_owner(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(role_required([Role.OWNER])),
+):
+    return await booking_crud.get_owner_bookings(db, current_user.id)
 
 @router.get("/{booking_id}", response_model=Booking)
 async def read_booking(
@@ -75,11 +83,15 @@ async def update_booking_details(
     _: User = Depends(check_not_blocked),
 ):
     # Update booking details
-    updated_booking = await booking_crud.update_booking(db, booking_id, booking, current_user)
+    updated_booking = await booking_crud.update_booking(
+        db, booking_id, booking, current_user
+    )
     owner = updated_booking.property.owner
     property = updated_booking.property
     message = f"Your property {property.name} booking has been updated."
-    report_path = await generate_booking_report(db, message=message, booking=updated_booking)
+    report_path = await generate_booking_report(
+        db, message=message, booking=updated_booking
+    )
     send_email_task.delay(
         email_to=owner.email,
         subject="Booking Updated",
@@ -101,7 +113,9 @@ async def delete_booking(
     owner = deleted_booking.property.owner
     property = deleted_booking.property
     message = f"Your property {property.name} booking has been canceled."
-    report_path = await generate_booking_report(db, message=message, booking=deleted_booking)
+    report_path = await generate_booking_report(
+        db, message=message, booking=deleted_booking
+    )
     send_email_task.delay(
         email_to=owner.email,
         subject="Booking Canceled",
@@ -118,5 +132,12 @@ async def send_owner_report(
 ):
     # Generate and send a report to the owner
     report_path = await generate_owner_report(db, current_user)
-    send_email_task.delay(current_user.email, "Your Booking Report", "Please find the attached report.", report_path)
+    send_email_task.delay(
+        current_user.email,
+        "Your Booking Report",
+        "Please find the attached report.",
+        report_path,
+    )
     return {"message": "Report sent successfully"}
+
+

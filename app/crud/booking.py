@@ -237,7 +237,7 @@ async def get_owner_bookings(db: AsyncSession, owner_id: int):
         select(Booking)
         .join(Booking.property)
         .where(Property.owner_id == owner_id)
-        .options(selectinload(Booking.property))
+        .options(selectinload(Booking.property), selectinload(Booking.payment))
     )
     result = await db.execute(query)
     bookings = result.scalars().all()
