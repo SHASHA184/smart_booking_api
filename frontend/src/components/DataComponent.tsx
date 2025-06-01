@@ -10,7 +10,7 @@ const DataComponent: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getData<Property[]>('/properties/');
+        const response = await getData<Property[]>('/properties/available');
         setData(response);
         setLoading(false);
       } catch (err) {

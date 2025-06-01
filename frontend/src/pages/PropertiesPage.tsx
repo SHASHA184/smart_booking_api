@@ -30,7 +30,7 @@ const PropertiesPage: React.FC = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await getData<Property[]>('/properties/');
+        const response = await getData<Property[]>('/properties/available');
         setProperties(response);
         setFilteredProperties(response);
         setLoading(false);

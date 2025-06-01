@@ -1,4 +1,4 @@
-import { Property } from './property';
+import { Property } from './api';
 
 export enum BookingStatus {
   PENDING = 'pending',
