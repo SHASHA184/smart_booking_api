@@ -135,3 +135,11 @@ async def get_available_properties(db: AsyncSession):
             ))
 
     return available_properties
+
+
+async def get_properties_by_owner(db: AsyncSession, owner_id: int):
+    """Get all properties owned by the current user."""
+    query = select(Property).filter(Property.owner_id == owner_id)
+    result = await db.execute(query)
+    properties = result.scalars().all()
+    return properties

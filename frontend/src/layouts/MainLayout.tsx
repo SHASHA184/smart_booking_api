@@ -16,6 +16,7 @@ import {
 import { AccountCircle, Home, Business, Book, Payment } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { Role } from '../types/user';
 
 const MainLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -68,6 +69,15 @@ const MainLayout: React.FC = () => {
                 >
                   My Bookings
                 </Button>
+                {user?.role?.toLowerCase() === 'owner' && (
+                  <Button 
+                    color="inherit" 
+                    startIcon={<Business />} 
+                    onClick={() => navigate('/my-properties')}
+                  >
+                    My Properties
+                  </Button>
+                )}
                 <Button 
                   color="inherit" 
                   startIcon={<Payment />} 

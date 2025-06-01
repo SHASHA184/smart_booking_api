@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from app.enums.user_role import Role
 from app.models.user import User
+from sqlalchemy import select
 
 router = APIRouter(
     prefix="/properties",
@@ -32,6 +33,16 @@ async def get_available_properties(db: AsyncSession = Depends(get_db)):
     """Get all available properties and their booking windows."""
     # Fetch available properties and their availability periods
     return await property_crud.get_available_properties(db)
+
+
+@router.get("/my-properties", response_model=List[Property])
+async def read_owner_properties(
+    db: AsyncSession = Depends(get_db),
+    current_user: dict = Depends(role_required([Role.OWNER])),
+    _: User = Depends(check_not_blocked),
+):
+    """Get all properties owned by the current user."""
+    return await property_crud.get_properties_by_owner(db, current_user.id)
 
 
 @router.get("/{property_id}", response_model=Property)
