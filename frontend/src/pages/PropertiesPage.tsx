@@ -13,12 +13,26 @@ import {
   MenuItem,
   Chip,
   Grid,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Alert,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import SearchIcon from '@mui/icons-material/Search';
 import { getData } from '../api/api';
 import { Property } from '../types/api';
+import { bookingApi } from '../api/bookingApi';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const PropertiesPage: React.FC = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,6 +40,14 @@ const PropertiesPage: React.FC = () => {
   const [roomFilter, setRoomFilter] = useState<number | 'all'>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  
+  // Booking dialog state
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [bookingError, setBookingError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -69,6 +91,38 @@ const PropertiesPage: React.FC = () => {
     setFilteredProperties(filtered);
   }, [searchTerm, priceRange, roomFilter, properties]);
 
+  const handleBookClick = (property: Property) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    setSelectedProperty(property);
+    setBookingDialogOpen(true);
+  };
+
+  const handleBookingSubmit = async () => {
+    if (!selectedProperty || !startDate || !endDate) {
+      setBookingError('Please select both check-in and check-out dates');
+      return;
+    }
+
+    try {
+      setBookingError(null);
+      await bookingApi.createBooking({
+        property_id: selectedProperty.id,
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0],
+      });
+      setSuccess('Booking created successfully!');
+      setBookingDialogOpen(false);
+      setStartDate(null);
+      setEndDate(null);
+      setSelectedProperty(null);
+    } catch (err) {
+      setBookingError('Failed to create booking. Please try again later.');
+    }
+  };
+
   if (loading) return <Typography>Loading properties...</Typography>;
   if (error) return <Typography color="error">{error}</Typography>;
 
@@ -77,6 +131,12 @@ const PropertiesPage: React.FC = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Available Properties
       </Typography>
+
+      {success && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {success}
+        </Alert>
+      )}
 
       {/* Filters Section */}
       <Card sx={{ mb: 4, p: 2 }}>
@@ -158,6 +218,15 @@ const PropertiesPage: React.FC = () => {
                     <Chip label={property.location} variant="outlined" sx={{ mb: 1 }} />
                   )}
                 </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{ mt: 2 }}
+                  onClick={() => handleBookClick(property)}
+                >
+                  Book Now
+                </Button>
               </CardContent>
             </Card>
           </Grid>
@@ -169,6 +238,40 @@ const PropertiesPage: React.FC = () => {
           No properties found matching your criteria
         </Typography>
       )}
+
+      {/* Booking Dialog */}
+      <Dialog open={bookingDialogOpen} onClose={() => setBookingDialogOpen(false)}>
+        <DialogTitle>Book {selectedProperty?.name}</DialogTitle>
+        <DialogContent>
+          {bookingError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {bookingError}
+            </Alert>
+          )}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <DatePicker
+                label="Check-in Date"
+                value={startDate}
+                onChange={(newValue) => setStartDate(newValue)}
+                minDate={new Date()}
+              />
+              <DatePicker
+                label="Check-out Date"
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+                minDate={startDate || new Date()}
+              />
+            </Box>
+          </LocalizationProvider>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setBookingDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleBookingSubmit} variant="contained" color="primary">
+            Confirm Booking
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
