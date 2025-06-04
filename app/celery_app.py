@@ -23,6 +23,6 @@ celery_app.conf.update(
 # celery_app.conf.beat_schedule = {
 #     "check-temperature-every-3-minutes": {
 #         "task": "check_temperature_task",
-#         "schedule": crontab(minute="*/1"),  # Run every 3 minutes
+#         "schedule": crontab(minute="*/3"),  # Run every 3 minutes
 #     },
 # }

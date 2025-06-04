@@ -12,6 +12,8 @@ import BookingsPage from './pages/BookingsPage';
 import MyPropertiesPage from './pages/MyPropertiesPage';
 import PaymentsPage from './pages/PaymentsPage';
 import OwnerBookingsPage from './pages/OwnerBookingsPage';
+import ReportsPage from './pages/ReportsPage';
+import OwnerDashboard from './pages/OwnerDashboard';
 
 const theme = createTheme({
   palette: {
@@ -44,6 +46,8 @@ function App() {
               <Route path="my-properties" element={<MyPropertiesPage />} />
               <Route path="payments" element={<PaymentsPage />} />
               <Route path="owner-bookings" element={<OwnerBookingsPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="owner-dashboard" element={<OwnerDashboard />} />
               {/* Add more routes as needed */}
             </Route>
           </Routes>

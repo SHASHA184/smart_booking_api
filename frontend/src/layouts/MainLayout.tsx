@@ -13,7 +13,7 @@ import {
   MenuItem,
   Avatar,
 } from '@mui/material';
-import { AccountCircle, Home, Business, Book, Payment } from '@mui/icons-material';
+import { AccountCircle, Home, Business, Book, Payment, Assessment } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Role } from '../types/user';
@@ -93,6 +93,25 @@ const MainLayout: React.FC = () => {
                   >
                     Owner Bookings
                   </Button>
+                )}
+                {isAuthenticated && (
+                  user?.role?.toLowerCase() === 'owner' ? (
+                    <Button 
+                      color="inherit" 
+                      startIcon={<Assessment />} 
+                      onClick={() => navigate('/owner-dashboard')}
+                    >
+                      Reports
+                    </Button>
+                  ) : user?.role?.toLowerCase() === 'admin' ? (
+                    <Button 
+                      color="inherit" 
+                      startIcon={<Assessment />} 
+                      onClick={() => navigate('/reports')}
+                    >
+                      Reports
+                    </Button>
+                  ) : null
                 )}
               </>
             )}

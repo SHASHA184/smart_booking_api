@@ -6,7 +6,7 @@ from app.models.user import User
 from app.schemas.user import User
 from app.enums.user_role import Role
 from app.schemas.booking import BookingCreate, BookingUpdate, PersonalizedOffer
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 from fastapi import HTTPException
 from datetime import date
 from sklearn.cluster import KMeans
@@ -15,6 +15,7 @@ from app.models.access_code import AccessCode
 from datetime import datetime, timedelta
 import random
 import string
+from typing import List
 
 
 async def check_availability(
@@ -242,3 +243,11 @@ async def get_owner_bookings(db: AsyncSession, owner_id: int):
     result = await db.execute(query)
     bookings = result.scalars().all()
     return bookings
+
+
+async def get_all_bookings(db: AsyncSession) -> List[Booking]:
+    """Get all bookings in the system (admin only)."""
+    result = await db.execute(
+        select(Booking).options(joinedload(Booking.property), joinedload(Booking.user))
+    )
+    return result.scalars().all()
